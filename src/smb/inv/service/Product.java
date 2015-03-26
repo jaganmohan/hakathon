@@ -9,7 +9,7 @@ public class Product {
 	private String productName;
 	private String modelNo;
 	private Map<String, String> specs;
-	private String descFileLoc;
+	private String productDesc;
 	private Date inflowDate;
 	private Date outflowDate;
 	
@@ -38,10 +38,10 @@ public class Product {
 		this.specs = specs;
 	}
 	public String getDescFileLoc() {
-		return descFileLoc;
+		return productDesc;
 	}
-	public void setDescFileLoc(String descFileLoc) {
-		this.descFileLoc = descFileLoc;
+	public void setDescFileLoc(String productDesc) {
+		this.productDesc = productDesc;
 	}
 	public Date getInflowDate() {
 		return inflowDate;
