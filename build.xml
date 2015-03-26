@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Hackathon" basedir="." default="war">
+
+	<property name="dir.src" value="src"/>
+	<property name="dir.webContent" value="WebContent"/>
+	<property name="dir.webinf" value="${dir.webContent}/WEB-INF"/>
+	<property name="dir.lib" value="${dir.webinf}/lib"/>
+	<property name="dir.classes" value="${dir.webinf}/classes"/>
+	<property name="dir.build" value="build"/>
+	
+	<path id="_classpath">
+		<fileset dir="${dir.lib}">
+			<include name="*.jar"/>
+		</fileset>
+		<pathelement path="${dir.classes}"/>
+	</path>
+	
+	<target name="build" description="">
+		<mkdir dir="${dir.classes}"/>
+		<javac destdir="${dir.classes}" failonerror="true" includeantruntime="false">
+			<src path="${dir.src}"/>
+			<classpath refid="_classpath"/>
+		</javac>
+	</target>
+	
+	<target name="war" depends="build" description="">
+		<war destfile="${dir.build}/Hackathon.war" webxml="${dir.webinf}/web.xml">
+			<fileset dir="${dir.webContent}">
+				<include name="**/*.*"/>
+			</fileset>
+		</war>
+	</target>
+
+</project>
