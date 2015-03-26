@@ -8,6 +8,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-
+	<p>This page show inflow of products on a certain date or between a range of date</p>
 </body>
 </html>
