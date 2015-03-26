@@ -14,9 +14,16 @@
        <!-- <bean id="searchProduct" name="/search" class="smb.inv.controller.SearchProduct">
        </bean> -->
        
+       <bean id="fetchProduct" class="smb.inv.service.FetchProductDetails"/>
+
+       <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+      		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+      		<property name="url" value="jdbc:mysql://localhost:3306/TEST"/>
+   		</bean>
+       
        <mvc:annotation-driven/>
        <context:annotation-config/>
-       <context:component-scan base-package="smb.inv.controller"/>
+       <context:component-scan base-package="smb.inv.controller, smb.inv.service"/>
        
        <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
