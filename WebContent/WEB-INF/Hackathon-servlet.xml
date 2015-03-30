@@ -1,34 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <beans xmlns="http://www.springframework.org/schema/beans"
-	   xmlns:mvc="http://www.springframework.org/schema/mvc"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
-       http://www.springframework.org/schema/context
-       http://www.springframework.org/schema/context/spring-context-4.1.xsd
-       http://www.springframework.org/schema/mvc
-       http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd">
-       
-       <!-- <bean id="searchProduct" name="/search" class="smb.inv.controller.SearchProduct">
-       </bean> -->
-       
-       <bean id="fetchProduct" class="smb.inv.service.FetchProductDetails"/>
-
-       <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-      		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-      		<property name="url" value="jdbc:mysql://localhost:3306/TEST"/>
-   		</bean>
-       
-       <mvc:annotation-driven/>
-       <context:annotation-config/>
-       <context:component-scan base-package="smb.inv.controller, smb.inv.service"/>
-       
-       <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
-       	<property name="prefix" value="/WEB-INF/jsp/"/>
-    	<property name="suffix" value=".jsp"/>
-       </bean>
-       
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-4.1.xsd
+http://www.springframework.org/schema/mvc
+http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd">
+	<!-- <bean id="searchProduct" name="/search" class="smb.inv.controller.SearchProduct"> 
+		</bean> -->
+	<bean id="fetchProduct" class="smb.inv.service.FetchProductDetails">
+		<property name="dataSource" ref="dataSource" />
+		<property name="productDescFolder" ref="descFolderLoc" />
+	</bean>
+	<bean id="fetchInflowOutflow" class="smb.inv.service.FetchInflowOutflowDetails">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="soldProductDetails" class="smb.inv.service.SoldProductDetails">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="descFolderLoc" class="java.lang.String">
+		<constructor-arg value="C:\ProductDesc\" />
+	</bean>
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/inventory" />
+		<property name="username" value="root" />
+	</bean>
+	<mvc:annotation-driven />
+	<context:annotation-config />
+	<context:component-scan base-package="smb.inv.controller, smb.inv.service" />
+	<!-- <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"> 
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/> 
+		<property name="prefix" value="/WEB-INF/jsp/"/> <property name="suffix" value=".jsp"/> 
+		</bean> -->
 </beans>
