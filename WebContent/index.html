@@ -27,12 +27,22 @@
 				</tr>
 				<tr>
 					<td><input ui-date ui-date-format="yyyy-mm-dd"
-						ng-model="fromDate"></td>
+						ng-model="inflowfromDate"></td>
 					<td><input ui-date ui-date-format="yyyy-mm-dd"
-						ng-model="toDate"></td>
+						ng-model="inflowtoDate"></td>
 					</td>
 					<td>
 						<button ng-click="submit2()">Search</button>
+					</td>
+				</tr>
+				<tr>
+					<td><input ui-date ui-date-format="yyyy-mm-dd"
+						ng-model="outflowfromDate"></td>
+					<td><input ui-date ui-date-format="yyyy-mm-dd"
+						ng-model="outflowtoDate"></td>
+					</td>
+					<td>
+						<button ng-click="submit3()">Search</button>
 					</td>
 				</tr>
 			</table>
@@ -50,7 +60,7 @@
 				<tr ng-repeat="product in productdetails">
 					<td>{{product.productId}}</td>
 					<td>{{product.productName}}</td>
-					<td><a href ng-click="submit3(product)">{{product.modelNo}}</a></td>
+					<td><a href ng-click="submit4(product)">{{product.modelNo}}</a></td>
 					<td>{{product.specs}}</td>
 					<td>{{product.inflowDate}}</td>
 					<td>{{product.outflowDate}}</td>
@@ -74,13 +84,17 @@
 	</div>
 	<div></div>
 	<script>
-		var mainApp = angular.module('ProductApp', []);
+				var mainApp = angular.module('ProductApp', []);
 
-		mainApp
-				.controller(
-						'ProductCtrl',
-						function($scope, $http) {
-							$scope.products = [ {
+				mainApp
+						.controller(
+								'ProductCtrl',
+								function($scope, $http) {
+							$scope.products = [ 
+							{  id: 'all',
+							   name: 'All'
+							},
+							{
 								id : 'productid',
 								name : 'Product ID'
 							}, {
@@ -91,20 +105,23 @@
 								name : 'Model Number'
 							} ];
 							$scope.selectedproduct = $scope.products[0];
-							$scope.fromDate = "2015-03-27";
-							$scope.toDate = "2015-03-27";
+							$scope.inflowfromDate = "2015-03-27";
+							$scope.inflowtoDate = "2015-03-27";
+							$scope.outflowfromDate = "2015-03-27";
+							$scope.outflowtoDate = "2015-03-27";
 							$scope.submit1 = function() {
 								var searchdetails = {
 									searchvalue : $scope.searchvalue,
 									selectedproduct : $scope.selectedproduct
 								}
-								if (searchdetails.searchvalue == "") {
-									searchdetails.searchvalue = NULL;
-								}
+								
+								if(angular.isUndefined(searchdetails.searchvalue) )
+								   var url = "http://localhost:8080/Hackathon/inventory/search/all";
+								else
 								var url = "http://localhost:8080/Hackathon/inventory/search/"
 										+ searchdetails.selectedproduct.id
 										+ "/" + searchdetails.searchvalue;
-								var res = $http.get(url);
+								var res = $http.post(url);
 								res.success(function(data, status, headers,
 										config) {
 									$scope.productdetails = data;
@@ -116,14 +133,35 @@
 							}
 							$scope.submit2 = function() {
 								var searchdetails = {
-									fromDate : $scope.fromDate,
-									toDate : $scope.toDate
+									inflowfromDate : $scope.inflowfromDate,
+									inflowtoDate : $scope.inflowtoDate
 								}
 
 								var url = "http://localhost:8080/Hackathon/inventory/inflow?inflowFromDate="
-										+ searchdetails.fromDate
+										+ searchdetails.inflowfromDate
 										+ "&inflowToDate="
-										+ searchdetails.toDate;
+										+ searchdetails.inflowtoDate;
+								var res = $http.get(url);
+								res.success(function(data, status, headers,
+										config) {
+									$scope.productdetails = data;
+								});
+								res.error(function(data, status, headers,
+										config) {
+									alert(data + " " + status);
+								});
+							}
+							
+							$scope.submit3 = function() {
+								var searchdetails = {
+									outflowfromDate : $scope.outflowfromDate,
+									outflowtoDate : $scope.outflowtoDate
+								}
+
+								var url = "http://localhost:8080/Hackathon/inventory/outflow?outflowFromDate="
+										+ searchdetails.outflowfromDate
+										+ "&outflowToDate="
+										+ searchdetails.outflowtoDate;
 								var res = $http.get(url);
 								res.success(function(data, status, headers,
 										config) {
@@ -135,7 +173,7 @@
 								});
 							}
 
-							$scope.submit3 = function(model) {
+							$scope.submit4 = function(model) {
 								var data = model;
 
 								var headers = {
