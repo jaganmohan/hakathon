@@ -1,0 +1,193 @@
+<html>
+
+<title>Product Iventory</title>
+<head>
+<script
+	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+</head>
+<body>
+	<div ng-app="ProductApp" ng-controller="ProductCtrl">
+		<form>
+			<table style="width: 40%">
+				<tr>
+					<td>
+					<td><h1>Product Details</h1></td>
+					</td>
+				</tr>
+				<tr>
+					<td><input type="textbox" ng-model="searchvalue" value=""></td>
+					<td><select ng-model="selectedproduct"
+						ng-options="product as product.name for product in products">
+					</select>
+
+						</center></td>
+					<td>
+						<button ng-click="submit1()">Search</button>
+					</td>
+				</tr>
+				<tr>
+					<td><input ui-date ui-date-format="yyyy-mm-dd"
+						ng-model="inflowfromDate"></td>
+					<td><input ui-date ui-date-format="yyyy-mm-dd"
+						ng-model="inflowtoDate"></td>
+					</td>
+					<td>
+						<button ng-click="submit2()">Search</button>
+					</td>
+				</tr>
+				<tr>
+					<td><input ui-date ui-date-format="yyyy-mm-dd"
+						ng-model="outflowfromDate"></td>
+					<td><input ui-date ui-date-format="yyyy-mm-dd"
+						ng-model="outflowtoDate"></td>
+					</td>
+					<td>
+						<button ng-click="submit3()">Search</button>
+					</td>
+				</tr>
+			</table>
+			<br> <br>
+			<table border="1">
+				<tr>
+					<th>Product ID</th>
+					<th>Product Name</th>
+					<th>Model No</th>
+					<th>Specification</th>
+					<th>Inflow Date</th>
+					<th>Outflow Date</th>
+					<th>Description</th>
+				</tr>
+				<tr ng-repeat="product in productdetails">
+					<td>{{product.productId}}</td>
+					<td>{{product.productName}}</td>
+					<td><a href ng-click="submit4(product)">{{product.modelNo}}</a></td>
+					<td>{{product.specs}}</td>
+					<td>{{product.inflowDate}}</td>
+					<td>{{product.outflowDate}}</td>
+					<td>{{product.descFileLoc}}</td>
+				</tr>
+			</table>
+			<br> <br>
+			<table border=1>
+				<tr>
+					<th>Brand</th>
+					<th>price</th>
+				</tr>
+				<tr ng-repeat="model in modeldetails">
+					<td>{{model.specs.Brand}}</td>
+					<td>{{model.specs.Price}}</td>
+				</tr>
+			</table>
+
+
+		</form>
+	</div>
+	<div></div>
+	<script>
+				var mainApp = angular.module('ProductApp', []);
+
+				mainApp
+						.controller(
+								'ProductCtrl',
+								function($scope, $http) {
+							$scope.products = [ 
+							{  id: 'all',
+							   name: 'All'
+							},
+							{
+								id : 'productid',
+								name : 'Product ID'
+							}, {
+								id : 'productname',
+								name : 'Product Name'
+							}, {
+								id : 'model',
+								name : 'Model Number'
+							} ];
+							$scope.selectedproduct = $scope.products[0];
+							$scope.inflowfromDate = "2015-03-27";
+							$scope.inflowtoDate = "2015-03-27";
+							$scope.outflowfromDate = "2015-03-27";
+							$scope.outflowtoDate = "2015-03-27";
+							$scope.submit1 = function() {
+								var searchdetails = {
+									searchvalue : $scope.searchvalue,
+									selectedproduct : $scope.selectedproduct
+								}
+								
+								if(angular.isUndefined(searchdetails.searchvalue) )
+								   var url = "http://localhost:8080/Hackathon/inventory/search/all";
+								else
+								var url = "http://localhost:8080/Hackathon/inventory/search/"
+										+ searchdetails.selectedproduct.id
+										+ "/" + searchdetails.searchvalue;
+								var res = $http.post(url);
+								res.success(function(data, status, headers,
+										config) {
+									$scope.productdetails = data;
+								});
+								res.error(function(data, status, headers,
+										config) {
+									alert(data + " " + status);
+								});
+							}
+							$scope.submit2 = function() {
+								var searchdetails = {
+									inflowfromDate : $scope.inflowfromDate,
+									inflowtoDate : $scope.inflowtoDate
+								}
+
+								var url = "http://localhost:8080/Hackathon/inventory/inflow?inflowFromDate="
+										+ searchdetails.inflowfromDate
+										+ "&inflowToDate="
+										+ searchdetails.inflowtoDate;
+								var res = $http.get(url);
+								res.success(function(data, status, headers,
+										config) {
+									$scope.productdetails = data;
+								});
+								res.error(function(data, status, headers,
+										config) {
+									alert(data + " " + status);
+								});
+							}
+							
+							$scope.submit3 = function() {
+								var searchdetails = {
+									outflowfromDate : $scope.outflowfromDate,
+									outflowtoDate : $scope.outflowtoDate
+								}
+
+								var url = "http://localhost:8080/Hackathon/inventory/outflow?outflowFromDate="
+										+ searchdetails.outflowfromDate
+										+ "&outflowToDate="
+										+ searchdetails.outflowtoDate;
+								var res = $http.get(url);
+								res.success(function(data, status, headers,
+										config) {
+									$scope.productdetails = data;
+								});
+								res.error(function(data, status, headers,
+										config) {
+									alert(data + " " + status);
+								});
+							}
+
+							$scope.submit4 = function(model) {
+								var data = model;
+
+								var headers = {
+									'Content-Type' : 'application/json'
+								}
+								var url = "http://localhost:8080/Hackathon/inventory/search/productinfo/"
+										+ model.modelNo;
+								var res = $http.post(url, data, headers);
+								res.success(function(data, status, headers,
+										config) {
+									$scope.modeldetails = data;
+								})
+							}
+						});
+	</script>
+</body>
+</html>
